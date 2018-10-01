@@ -3,12 +3,14 @@ float[] gestureOne=null;
 float[] gestureTwo = null;
 float[] gestureThree = null;
 
-float[][] gesturePoints = new float[4][2];
-float[] gestureDist = new float[4];
-String[] names = {"Nothing", "One-finger-Touch", "Two-finger-Touch","Three-finger-Touch"};
+float[][] gesturePoints = new float[8][2];
+float[] gestureDist = new float[8];
+String[] names = {"Nothing", "One-finger-Touch", "Two-finger-Touch","Three-finger-Touch", "Grasp","Near","Hold"};
+String kindOfMaterial = "nectorwater";
+PrintWriter output;
 void setup() {
 
-  size(1200, 500); 
+  size(1200, 800); 
 
   MyArduinoGraph.xLabel="Readnumber";
   MyArduinoGraph.yLabel="Amp";
@@ -22,7 +24,14 @@ void setup() {
    [1] "COM2" 
    [2] "COM4"
    ==================================================================== */
-  SerialPortSetup();      // speed of 115200 bps etc.
+  
+  if (SerialPortSetup()) { // speed of 115200 bps etc.
+    String filename = nf(year(),4) + nf(month(),2) + nf(day(),2) + nf(hour(),2) + nf(minute(),2) + nf(second(),2);
+    output = createWriter("data/" +kindOfMaterial + "/"+ filename + ".csv"); 
+  } else {
+    exit();
+  }
+  frameRate(20);
 }
 
 
@@ -55,7 +64,7 @@ void draw() {
     float totalDist = 0;
     int currentMax = 0;
     float currentMaxValue = -1;
-    for (int i = 0; i < 4;i++)
+    for (int i = 0; i < names.length;i++)
 
     {
 
@@ -66,6 +75,7 @@ void draw() {
 
         gesturePoints[i][0] = Time3[MyArduinoGraph.maxI];
         gesturePoints[i][1] = Voltage3[MyArduinoGraph.maxI];
+        
       }
       else
       {
@@ -83,7 +93,7 @@ void draw() {
     }
     totalDist=totalDist /3;
 
-    for (int i = 0; i < 4;i++)
+    for (int i = 0; i < names.length;i++)
     {
       float currentAmmount = 0;
       currentAmmount = 1-gestureDist[i]/totalDist;
@@ -114,9 +124,34 @@ void draw() {
   }
 }
 
+void keyPressed() {
+  if (key == 'S' || key == 's') {
+    output.flush();
+    output.close();
+    println("File Saved!");
+  }
+}
+
 void stop()
 {
-
+  
+  output.flush();
+  output.close();
   myPort.stop();
   super.stop();
+}
+
+void mousePressed() {
+  for (int i = 0;i<6;i++) {
+    if (mouseX > 750 && mouseX<800 && mouseY > 100*(i+1) && mouseY < 100*(i+1) + 50) {
+      println("area %d pressed",i);
+      output.print(names[i] + ",");
+      println(Voltage3.length);
+      for (int j = 0;j<Voltage3.length;j++) {
+        println(j);
+        output.print(Voltage3[j] + ",");
+      }
+      output.println();
+    }
+  }
 }

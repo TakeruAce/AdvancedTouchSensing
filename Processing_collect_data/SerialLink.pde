@@ -48,7 +48,7 @@ Serial myPort;                                        // The serial port object
  the serial port and clearing the serial port buffer  
  =================================================================================*/
 
-void SerialPortSetup() {
+boolean SerialPortSetup() {
 
   //  text(Serial.list().length,200,200);
 
@@ -57,10 +57,20 @@ void SerialPortSetup() {
   //  println( Serial.list());
   ArrayOfPorts=Serial.list();
   println(ArrayOfPorts);
+  //exit();
   myPort = new Serial(this, portName, 115200);
-  delay(50);
+  println(myPort);
+  //exit();
+  if (myPort == null) {
+    exit();
+  }
+  print("a");
+  //delay(50);
+  print("a");
   myPort.clear(); 
   myPort.buffer(20);
+  print("a");
+  return true;
 }
 
 /* ============================================================    
