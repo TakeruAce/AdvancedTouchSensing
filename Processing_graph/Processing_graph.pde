@@ -5,16 +5,16 @@ float[] gestureThree = null;
 
 float[][] gesturePoints = new float[4][2];
 float[] gestureDist = new float[4];
-String[] names = {"Nothing", "Touch", "Grab","In water"};
+String[] names = {"Nothing", "One-finger-Touch", "Two-finger-Touch","Three-finger-Touch"};
 void setup() {
 
-  size(1000, 500); 
+  size(1200, 500); 
 
   MyArduinoGraph.xLabel="Readnumber";
   MyArduinoGraph.yLabel="Amp";
   MyArduinoGraph.Title=" Graph";  
   noLoop();
-  PortSelected=1;      /* ====================================================================
+  PortSelected=7;      /* ====================================================================
    adjust this (0,1,2...) until the correct port is selected 
    In my case 2 for COM4, after I look at the Serial.list() string 
    println( Serial.list() );
@@ -37,7 +37,7 @@ void draw() {
   if ( DataRecieved3 ) {
     pushMatrix();
     pushStyle();
-    MyArduinoGraph.yMax=1000;      
+    MyArduinoGraph.yMax=800;      
     MyArduinoGraph.yMin=-200;      
     MyArduinoGraph.xMax=int (max(Time3));
     MyArduinoGraph.DrawAxis();    
@@ -120,4 +120,3 @@ void stop()
   myPort.stop();
   super.stop();
 }
-

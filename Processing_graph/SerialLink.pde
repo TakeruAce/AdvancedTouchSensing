@@ -1,6 +1,6 @@
 import processing.serial.*;
-int SerialPortNumber=2;
-int PortSelected=2;
+int SerialPortNumber=8;
+int PortSelected=7;
 
 /*   =================================================================================       
  Global variables
@@ -53,6 +53,7 @@ void SerialPortSetup() {
   //  text(Serial.list().length,200,200);
 
   portName= Serial.list()[PortSelected];
+  //portName = "/dev/tty.usbmodem14111";
   //  println( Serial.list());
   ArrayOfPorts=Serial.list();
   println(ArrayOfPorts);
@@ -235,5 +236,3 @@ How that works: if xMSB = 10001001   and xLSB = 0100 0011
   redraw();  
   //    }
 }
-
-
