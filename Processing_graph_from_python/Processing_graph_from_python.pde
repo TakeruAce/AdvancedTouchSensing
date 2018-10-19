@@ -32,6 +32,7 @@ void setup() {
    [2] "COM4"
    ==================================================================== */
   SerialPortSetup();      // speed of 115200 bps etc.
+  electroMagnetSerialSetup();
   server_of_processing = new Server(this,port);
   println("server address:" + server_of_processing.ip());
   client_of_processing = new Client(this,"",10002);
@@ -132,6 +133,21 @@ void draw() {
     fill(0,0,0);
     textSize(30);
     text(currentState,810,100*1+25);
+    switch(currentState) {
+      case "Nothing":
+        myElectroMagnetPort.write('a');
+        println("a");
+        break;
+      case "Near":
+        myElectroMagnetPort.write('b');
+        println("b");
+        break;
+      case "One-finger-Touch":
+        myElectroMagnetPort.write('c');
+        println("c");
+        break;
+        
+    }
     
 
   }
@@ -152,7 +168,6 @@ void readServerData() {
     isServerResReceived = true;
     if (whatClientSaid != null) {
       currentState = whatClientSaid;
-      println(currentState);
     } else {
       currentState = "";
     }

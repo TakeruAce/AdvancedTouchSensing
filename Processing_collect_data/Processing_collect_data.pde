@@ -5,9 +5,10 @@ float[] gestureThree = null;
 
 float[][] gesturePoints = new float[8][2];
 float[] gestureDist = new float[8];
-String[] names = {"Nothing", "One-finger-Touch", "Two-finger-Touch","Three-finger-Touch", "Grasp","Near","Hold"};
-String kindOfMaterial = "nectorwater";
+String[] names = {"Nothing", "One-finger-Touch", "Two-finger-Touch","Three-finger-Touch", "Five-finger-touch","Near","Hold"};
+String kindOfMaterial = "ironsand-magnet";
 PrintWriter output;
+boolean isCollecting = false;
 void setup() {
 
   size(1200, 800); 
@@ -142,16 +143,21 @@ void stop()
 }
 
 void mousePressed() {
-  for (int i = 0;i<6;i++) {
-    if (mouseX > 750 && mouseX<800 && mouseY > 100*(i+1) && mouseY < 100*(i+1) + 50) {
-      println("area %d pressed",i);
-      output.print(names[i] + ",");
-      println(Voltage3.length);
-      for (int j = 0;j<Voltage3.length;j++) {
-        println(j);
-        output.print(Voltage3[j] + ",");
+  if (isCollecting) return;
+  int count = 0;
+  while(count < 10) {
+    for (int i = 0;i<6;i++) {
+      if (mouseX > 750 && mouseX<800 && mouseY > 100*(i+1) && mouseY < 100*(i+1) + 50) {
+        println("area %d pressed",i);
+        output.print(names[i] + ",");
+        println(Voltage3.length);
+        for (int j = 0;j<Voltage3.length;j++) {
+          println(j);
+          output.print(Voltage3[j] + ",");
+        }
+        output.println();
       }
-      output.println();
     }
+    count++;
   }
 }
