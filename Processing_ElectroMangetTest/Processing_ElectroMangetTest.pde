@@ -25,21 +25,25 @@ void setup() {
 
 void draw() {
   if (writeStr != "") {
-    myElectroMagnetPort.write(writeStr);
+    //myElectroMagnetPort.write(writeStr);
+    println(writeStr);
   }
 }
 
 void a() {
   println("a");
   writeStr = "a";
+  myElectroMagnetPort.write("a");
 }
 
 void b() {
   println("b");
   writeStr = "b";
+  myElectroMagnetPort.write("b");
 }
 
 void c() {
   println("c");
   writeStr = "c";
+  myElectroMagnetPort.write("c");
 }
