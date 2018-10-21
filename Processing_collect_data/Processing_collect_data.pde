@@ -5,7 +5,7 @@ float[] gestureThree = null;
 
 float[][] gesturePoints = new float[8][2];
 float[] gestureDist = new float[8];
-String[] names = {"Nothing", "One-finger-Touch", "Two-finger-Touch","Three-finger-Touch", "Five-finger-touch","Near","Hold"};
+String[] names = {"Nothing", "One-finger-Touch", "Near"};
 String kindOfMaterial = "ironsand-magnet";
 PrintWriter output;
 boolean isCollecting = false;
