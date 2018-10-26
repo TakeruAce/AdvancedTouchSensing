@@ -429,5 +429,3 @@ class Graph
     smoothLine(z, a);
   }
 }
-
-

@@ -44,7 +44,7 @@ void setup() {
 void draw() {
   //receive message from python
   readServerData();
-  print(currentState + "  ");
+  print(currentState + " ");
   if (!isSendStarted && isServerResReceived) {
     isServerResReceived = false;
     sendVoltageData();
