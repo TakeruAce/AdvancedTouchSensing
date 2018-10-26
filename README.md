@@ -3,7 +3,7 @@
 ## 1. DataCollection
 You can save relationship between the feature values of Capacitance and the gesture by clicking square on the board.
 You should press "s" to save the all data before exiting.
-The data are saved to Processing_collect_data/data/YOUR_MATERIAL_NAME/..
+The data are saved to Processing/DataCollection/data/..
 
 ## 2. Classification
 Run　the first column　to create the classification model with SVM based on your data (**Need to specify the path of data**).
