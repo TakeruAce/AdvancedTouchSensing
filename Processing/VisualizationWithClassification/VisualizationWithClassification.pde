@@ -34,6 +34,7 @@ void setup() {
   SerialPortSetup();      // speed of 115200 bps etc.
   electroMagnetSerialSetup();
   server_of_processing = new Server(this,port);
+  server_of_processing.active();
   println("server address:" + server_of_processing.ip());
   client_of_processing = new Client(this,"",10002);
   frameRate(10);
@@ -43,7 +44,7 @@ void setup() {
 void draw() {
   //receive message from python
   readServerData();
-  print(currentState);
+  print(currentState + "  ");
   if (!isSendStarted && isServerResReceived) {
     isServerResReceived = false;
     sendVoltageData();
@@ -136,15 +137,15 @@ void draw() {
     switch(currentState) {
       case "Nothing":
         myElectroMagnetPort.write('a');
-        println("a");
+        println("Send: a");
         break;
       case "Near":
         myElectroMagnetPort.write('b');
-        println("b");
+        println("Send: b");
         break;
       case "One-finger-Touch":
         myElectroMagnetPort.write('c');
-        println("c");
+        println("Send: c");
         break;
         
     }
