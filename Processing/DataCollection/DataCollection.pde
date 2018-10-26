@@ -6,29 +6,36 @@ float[] gestureThree = null;
 float[][] gesturePoints = new float[8][2];
 float[] gestureDist = new float[8];
 String[] names = {"Nothing", "One-finger-Touch", "Near"};
-String kindOfMaterial = "ironsand-magnet";
 PrintWriter output;
 boolean isCollecting = false;
 void setup() {
 
-  size(1200, 800); 
+  size(1200, 600); 
 
-  MyArduinoGraph.xLabel="Readnumber";
+  MyArduinoGraph.xLabel="Number";
   MyArduinoGraph.yLabel="Amp";
-  MyArduinoGraph.Title=" Graph";  
+  MyArduinoGraph.Title="Graph";  
   noLoop();
-  PortSelected=7;      /* ====================================================================
+  PortSelected=7;
+  /* ====================================================================
    adjust this (0,1,2...) until the correct port is selected 
-   In my case 2 for COM4, after I look at the Serial.list() string 
-   println( Serial.list() );
+   In my case 2 for COM4, after I look at the Serial.list() string    
    [0] "COM1"  
    [1] "COM2" 
    [2] "COM4"
    ==================================================================== */
   
+  String path = sketchPath();
+  File[] files = listFiles(path + "/data");
+  for (int i = 0; i < files.length; i++) {
+    if (!files[i].isDirectory()) {
+      files[i].delete();
+    }
+  }
+  
   if (SerialPortSetup()) { // speed of 115200 bps etc.
     String filename = nf(year(),4) + nf(month(),2) + nf(day(),2) + nf(hour(),2) + nf(minute(),2) + nf(second(),2);
-    output = createWriter("data/" +kindOfMaterial + "/"+ filename + ".csv"); 
+    output = createWriter("data/" + filename + ".csv"); 
   } else {
     exit();
   }
@@ -120,8 +127,10 @@ void draw() {
       fill(255, 0, 0);
    //   rect(800,100* (i+1), max(0,currentAmmount*50),50);
     }
-
-
+    
+    fill(0, 0, 0);
+    textSize(20);
+    text("Click label to collect data for a second.   /   Type 's' to save collected data.", 55, 500);
   }
 }
 
@@ -129,13 +138,11 @@ void keyPressed() {
   if (key == 'S' || key == 's') {
     output.flush();
     output.close();
-    println("File Saved!");
+    println("Save file.");
   }
 }
 
-void stop()
-{
-  
+void stop() {
   output.flush();
   output.close();
   myPort.stop();
@@ -145,19 +152,20 @@ void stop()
 void mousePressed() {
   if (isCollecting) return;
   int count = 0;
-  while(count < 10) {
-    for (int i = 0;i<6;i++) {
-      if (mouseX > 750 && mouseX<800 && mouseY > 100*(i+1) && mouseY < 100*(i+1) + 50) {
-        println("area %d pressed",i);
+  println("Start recording...");
+  for (int i = 0; i < names.length; i++) {
+    if (mouseX > 750 && mouseX < 800 && mouseY > 100 * (i+1) && mouseY < 100 * (i+1) + 50) {
+      println("Press '" + names[i] + "'");      
+      while(count < 20) {
         output.print(names[i] + ",");
-        println(Voltage3.length);
         for (int j = 0;j<Voltage3.length;j++) {
-          println(j);
           output.print(Voltage3[j] + ",");
         }
         output.println();
+        count++;
+        delay(50);
       }
     }
-    count++;
   }
+  println("Finish recording.");
 }

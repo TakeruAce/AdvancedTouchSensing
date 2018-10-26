@@ -56,20 +56,21 @@ boolean SerialPortSetup() {
   //portName = "/dev/tty.usbmodem14111";
   //  println( Serial.list());
   ArrayOfPorts=Serial.list();
+  println("Port list:");
+  println("=====================================");
   println(ArrayOfPorts);
+  println("=====================================");
   //exit();
   myPort = new Serial(this, portName, 115200);
-  println(myPort);
+  println("Selected port: " + portName);
   //exit();
   if (myPort == null) {
     exit();
   }
-  print("a");
+
   //delay(50);
-  print("a");
   myPort.clear(); 
-  myPort.buffer(20);
-  print("a");
+  myPort.buffer(20);  
   return true;
 }
 
