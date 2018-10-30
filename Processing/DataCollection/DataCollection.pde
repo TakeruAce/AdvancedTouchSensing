@@ -44,16 +44,16 @@ void setup() {
 void draw() {
   background(255);
 
-  if ( DataReceived3 ) {
+  if ( DataReceived ) {
     pushMatrix();
     pushStyle();
     try {
       for (int i = 0; i < graphs.length; i++) {
         graphs[i].yMax = 700;
         graphs[i].yMin = 0;
-        graphs[i].xMax = int(max(Time3));
+        graphs[i].xMax = int(max(Time));
         graphs[i].DrawAxis();
-        graphs[i].smoothLine(Time3, Voltage3);
+        graphs[i].smoothLine(Time, Voltage);
       }
     } catch(NullPointerException e) {
       println("Warning: Data are not initialized.");
@@ -108,8 +108,8 @@ void mousePressed() {
       println("Press '" + names[i] + "'");
       while(count < 20) {
         output.print(names[i] + ",");
-        for (int j = 0;j<Voltage3.length;j++) {
-          output.print(Voltage3[j] + ",");
+        for (int j = 0;j<Voltage.length;j++) {
+          output.print(Voltage[j] + ",");
         }
         output.println();
         count++;

@@ -47,12 +47,10 @@ void SendData(int Command, unsigned int yValue,unsigned int xValue) {
 }
 
 void PlottArray(unsigned int Cmd,float Array1[],float Array2[]) {
-  SendData(Cmd+1, 1,1);                        // Tell PC an array is about to be sent
+  SendData(Cmd, 1, 1);                // Tell PC an array is about to be sent
   delay(1);
-  for(int x=0;  x < sizeOfArray;  x++){     // Send the arrays
-    SendData(Cmd, round(Array1[x]),round(Array2[x]));
-    //delay(1);
+  for (int x = 0; x < sizeOfArray; x++) {
+    SendData(Cmd + 1, round(Array1[x]), round(Array2[x]));
   }
-
-  SendData(Cmd+2, 1,1);                        // Confirm arrrays have been sent
+  SendData(Cmd + 2, 1, 1);            // Confirm arrrays have been sent
 }

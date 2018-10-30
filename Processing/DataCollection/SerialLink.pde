@@ -1,39 +1,27 @@
 import processing.serial.*;
 
+// Port
 int PortSelected = 11;
-
-int xValue, yValue, Command;
-boolean Error = true;
-
-boolean UpdateGraph = true;
-int lineGraph;
-int ErrorCounter = 0;
-int TotalRecieved = 0;
-
-boolean DataReceived1 = false, DataReceived2 = false, DataReceived3 = false;
-
-float[] DynamicArrayTime1, DynamicArrayTime2, DynamicArrayTime3;
-float[] Time1, Time2, Time3;
-float[] Voltage1, Voltage2, Voltage3;
-float[] current;
-float[] DynamicArray1, DynamicArray2, DynamicArray3;
-
-float[] PowerArray = new float[0];
-float[] DynamicArrayPower = new float[0];
-float[] DynamicArrayTime = new float[0];
-
 String portName;
 String[] ArrayOfPorts = new String[PortSelected];
+Serial myPort;
 
-boolean DataReceived = false, Data1Recieved=false, Data2Recieved=false;
-int incrament = 0;
+// Data
+boolean DataReceived = false;
+float[] DynamicTime;
+float[] DynamicVoltage;
+float[] Time;
+float[] Voltage;
 
+// Communication
+int xValue, yValue, Command;
+boolean Error = true;
+int ErrorCounter = 0;
+int TotalRecieved = 0;
 int NumOfSerialBytes = 8;
 int[] serialInArray = new int[NumOfSerialBytes];
 int serialCount = 0;
 int xMSB, xLSB, yMSB, yLSB;
-
-Serial myPort;
 
 boolean SerialPortSetup() {
   portName = Serial.list()[PortSelected];
@@ -104,8 +92,6 @@ void serialEvent(Serial myPort) {
       if ( (zeroByte & 8) == 8) yMSB=0;
 
       // Combine bytes to form large integers
-      xValue   = xMSB << 8 | xLSB;
-      yValue   = yMSB << 8 | yLSB;
       /*
         How it works:
 
@@ -115,59 +101,33 @@ void serialEvent(Serial myPort) {
         xLSB | xMSB = 10001001 01000011
         xValue = 10001001 01000011 (xValue is a 2 byte number 0 -> 65536)
       */
+      xValue   = xMSB << 8 | xLSB;
+      yValue   = yMSB << 8 | yLSB;
 
       Command  = serialInArray[1];
       switch(Command) {
-        // add values
+        // Init arrays
         case 1:
+          DynamicTime = new float[0];
+          DynamicVoltage = new float[0];
+          break;
+
+        // Add values
+        case 2:
           try {
-            DynamicArrayTime3 = append(DynamicArrayTime3, (xValue));
-            DynamicArray3 = append(DynamicArray3, (yValue));
+            DynamicTime = append(DynamicTime, (xValue));
+            DynamicVoltage = append(DynamicVoltage, (yValue));
             break;
           } catch(NullPointerException e) {
             println("Warning: Arrays are not initialized in this loop.");
           }
           break;
 
-        // init arrays
-        case 2:
-          DynamicArrayTime3 = new float[0];
-          DynamicArray3 = new float[0];
-          break;
-
-        // export arrays
+        // Export arrays
         case 3:
-          Time3 = DynamicArrayTime3;
-          Voltage3 = DynamicArray3;
-          DataReceived3 = true;
-          break;
-
-        // Data is added to dynamic arrays
-        case 4:
-          DynamicArrayTime2 = append(DynamicArrayTime2, xValue);
-          DynamicArray2 = append(DynamicArray2, (yValue - 16000.0) / 32000.0 * 20.0);
-          break;
-
-        // An array of unknown size is about to be recieved, empty storage arrays
-        case 5:
-          DynamicArrayTime2 = new float[0];
-          DynamicArray2 = new float[0];
-          break;
-
-        // Array has finnished being recieved, update arrays being drawn
-        case 6:
-          Time2 = DynamicArrayTime2;
-          current = DynamicArray2;
-          DataReceived2 = true;
-          break;
-
-        case 20:
-          PowerArray = append( PowerArray, yValue );
-          break;
-
-        case 21:
-          DynamicArrayTime = append( DynamicArrayTime, xValue );
-          DynamicArrayPower = append( DynamicArrayPower, yValue );
+          Time = DynamicTime;
+          Voltage = DynamicVoltage;
+          DataReceived = true;
           break;
       }
     }
