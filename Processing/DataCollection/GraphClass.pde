@@ -2,12 +2,12 @@ class Graph {
   float maxX = 0;
   float maxY = 0;
   int maxI = 0;
-  boolean RightAxis;            // Draw the next graph using the right axis if true
+  boolean RightAxis = false;            // Draw the next graph using the right axis if true
   boolean ErrorFlag = false;      // If the time array isn't in ascending order, make true
   boolean ShowMouseLines = true;  // Draw lines and give values of the mouse position
 
-  int xDiv = 5;
-  int yDiv = 5;
+  int xDiv = 4;
+  int yDiv = 4;
   int xPos, yPos;
   int Width, Height;
 
@@ -41,116 +41,132 @@ class Graph {
     strokeWeight(1);
     int t = 60;
 
-    rect(xPos - t * 1.6, yPos - t, Width + t * 2.5, Height + t * 2);            // outline
+    // outline
+    rect(xPos - t * 1.6, yPos - t, Width + t * 2.5, Height + t * 2);
+
+    // Heading Rectangle
     textAlign(CENTER);
     textSize(18);
-    float c=textWidth(Title);
+    float c = textWidth(Title);
     fill(BackgroundColor);
     color(0);
     stroke(0);
     strokeWeight(1);
-    rect(xPos + Width / 2 - c / 2, yPos - 35, c, 0);                         // Heading Rectangle
+    rect(xPos + Width / 2 - c / 2, yPos - 35, c, 0);
 
+    // Heading Title
     fill(0);
-    text(Title, xPos+Width/2, yPos-37);                            // Heading Title
-    textAlign(CENTER);
-    textSize(14);
+    text(Title, xPos + Width / 2, yPos - 37);
 
-    //Edges
-    line(xPos-3, yPos+Height, xPos-3, yPos);                        // y-axis line
-    line(xPos-3, yPos+Height, xPos+Width+5, yPos+Height);           // x-axis line
+    // x-axis Label
+    textAlign(CENTER);
+    textSize(10);
+    text(xLabel, xPos + Width / 2, yPos + Height + t / 1.5);
+
+    // y-axis Label
+    rotate(-PI/2);
+    text(yLabel, -yPos - Height / 2, xPos - t * 1.5 + 20);
+    rotate(PI/2);
+
+    // Axis Lines
+    line(xPos-3, yPos + Height, xPos - 3, yPos);
+    line(xPos-3, yPos + Height, xPos + Width + 5, yPos + Height);
 
     stroke(200);
-    if (yMin<0) {
-      line(xPos-7, // zero line
-      yPos+Height-(abs(yMin)/(yMax-yMin))*Height, //
-      xPos+Width,
-      yPos+Height-(abs(yMin)/(yMax-yMin))*Height
-        );
+    if (yMin < 0) {
+      // zero line
+      line(
+        xPos - 7,
+        yPos + Height - (abs(yMin) / (yMax-yMin)) * Height,
+        xPos+Width,
+        yPos+Height-(abs(yMin)/(yMax-yMin))*Height
+      );
     }
 
-    if (RightAxis) {                                       // Right-axis line
+    // Right-axis line
+    if (RightAxis) {
       stroke(0);
-      line(xPos+Width+3, yPos+Height, xPos+Width+3, yPos);
+      line(xPos + Width + 3, yPos + Height, xPos + Width + 3, yPos);
     }
 
     /*  =========================================================================================
      Sub-devisions for both axes, left and right
      ==========================================================================================  */
-
     stroke(0);
+    for (int x = 0; x <= xDiv; x++) {
+      // x-axis
+      line(
+        float(x) / xDiv * Width + xPos - 3,
+        yPos + Height,
+        float(x) / xDiv * Width + xPos - 3,
+        yPos+Height + 5
+      );
 
-    for (int x=0; x<=xDiv; x++) {
-
-      /*  =========================================================================================
-       x-axis
-       ==========================================================================================  */
-
-      line(float(x)/xDiv*Width+xPos-3, yPos+Height, //  x-axis Sub devisions
-      float(x)/xDiv*Width+xPos-3, yPos+Height+5);
-
-      textSize(10);                                      // x-axis Labels
-      String xAxis=str(xMin+float(x)/xDiv*(xMax-xMin));  // the only way to get a specific number of decimals
+      textSize(10);
+      String xAxis = str(xMin + float(x) / xDiv * (xMax - xMin));  // the only way to get a specific number of decimals
       String[] xAxisMS=split(xAxis, '.');                 // is to split the float into strings
-      text(xAxisMS[0]+"."+xAxisMS[1].charAt(0), // ...
-      float(x)/xDiv*Width+xPos-3, yPos+Height+15);   // x-axis Labels
+      text(
+        xAxisMS[0] + "." + xAxisMS[1].charAt(0),
+        float(x) / xDiv * Width + xPos - 3,
+        yPos + Height + 15
+      );
     }
-
 
     /*  =========================================================================================
      left y-axis
      ==========================================================================================  */
-
-    for (int y=0; y<=yDiv; y++) {
-      line(xPos-3, float(y)/yDiv*Height+yPos, // ...
-      xPos-7, float(y)/yDiv*Height+yPos);              // y-axis lines
-
-        textAlign(RIGHT);
+    for (int y = 0; y <= yDiv; y++) {
+      line(
+        xPos-3,
+        float(y) / yDiv * Height + yPos,
+        xPos-7,
+        float(y) / yDiv * Height + yPos
+      );
+      textAlign(RIGHT);
       fill(20);
-
-      String yAxis=str(yMin+float(y)/yDiv*(yMax-yMin));     // Make y Label a string
-      String[] yAxisMS=split(yAxis, '.');                    // Split string
-
-      text(yAxisMS[0]+"."+yAxisMS[1].charAt(0), // ...
-      xPos-15, float(yDiv-y)/yDiv*Height+yPos+3);       // y-axis Labels
+      String yAxis = str(yMin + float(y) / yDiv * (yMax - yMin));     // Make y Label a string
+      String[] yAxisMS = split(yAxis, '.');                    // Split string
+      text(
+        yAxisMS[0] + "." + yAxisMS[1].charAt(0),
+        xPos-15,
+        float(yDiv - y) / yDiv * Height + yPos + 3
+      );
 
 
       /*  =========================================================================================
        right y-axis
        ==========================================================================================  */
-
       if (RightAxis) {
-
         color(GraphColor);
         stroke(GraphColor);
         fill(20);
 
-        line(xPos+Width+3, float(y)/yDiv*Height+yPos, // ...
-        xPos+Width+7, float(y)/yDiv*Height+yPos);            // Right Y axis sub devisions
+        line(
+          xPos+Width+3,
+          float(y) / yDiv * Height + yPos,
+          xPos+Width+7,
+          float(y) / yDiv * Height + yPos
+        );
 
-          textAlign(LEFT);
+        textAlign(LEFT);
+        String yAxisRight = str(yMinRight + float(y) / yDiv * (yMaxRight - yMinRight));           // convert axis values into string
+        String[] yAxisRightMS = split(yAxisRight, '.');             //
 
-        String yAxisRight=str(yMinRight+float(y)/                // ...
-        yDiv*(yMaxRight-yMinRight));           // convert axis values into string
-        String[] yAxisRightMS=split(yAxisRight, '.');             //
-
-        text(yAxisRightMS[0]+"."+yAxisRightMS[1].charAt(0), // Right Y axis text
-        xPos+Width+15, float(yDiv-y)/yDiv*Height+yPos+3);   // it's x,y location
-
+        text(
+          yAxisRightMS[0] + "." + yAxisRightMS[1].charAt(0), // Right Y axis text
+          xPos+Width+15,
+          float(yDiv - y) / yDiv * Height + yPos + 3
+        );   // it's x,y location
         noFill();
       }
       stroke(0);
     }
   }
 
-
   /*  =========================================================================================
    Bar graph
    ==========================================================================================  */
-
   void Bar(float[] a, int from, int to) {
-
-
     stroke(GraphColor);
     fill(GraphColor);
 
@@ -161,9 +177,7 @@ class Graph {
         Width/a.length-2,
         -a[x]/(yMax-yMin)*Height);
       }
-    }
-
-    else {
+    } else {
       for (int x=from; x<to; x++) {
 
         rect(int(xPos+(x-from)*float(Width)/(to-from)),
@@ -173,8 +187,8 @@ class Graph {
       }
     }
   }
-  void Bar(float[] a ) {
 
+  void Bar(float[] a ) {
     stroke(GraphColor);
     fill(GraphColor);
 
@@ -189,9 +203,7 @@ class Graph {
   /*  =========================================================================================
    Streight line graph
    ==========================================================================================  */
-
   void LineGraph(float[] x, float[] y) {
-
     for (int i=0; i<(x.length-1); i++) {
       strokeWeight(2);
       stroke(GraphColor);
@@ -207,9 +219,7 @@ class Graph {
   /*  =========================================================================================
    smoothLine
    ==========================================================================================  */
-
   void smoothLine(float[] x, float[] y) {
-
     float tempyMax=yMax, tempyMin=yMin;
 
     if (RightAxis) {
@@ -238,8 +248,6 @@ class Graph {
         maxI = i;
       }
     }
-
-
 
     for (int i=0; i<x.length; i++) {
       /* ===========================================================================
@@ -290,12 +298,12 @@ class Graph {
 
     endShape();
 
-    yMax=tempyMax;
-    yMin=tempyMin;
+    yMax = tempyMax;
+    yMin = tempyMin;
     float xAxisTitleWidth=textWidth(str(map(xlocation, xPos, xPos+Width, x[0], x[x.length-1])));
 
 
-    if ((mouseX>xPos&mouseX<(xPos+Width))&(mouseY>yPos&mouseY<(yPos+Height))) {
+    if ((mouseX > xPos & mouseX < (xPos + Width)) & (mouseY > yPos & mouseY < (yPos + Height))) {
       if (ShowMouseLines) {
         if (mouseX>xPos+Width)xlocation=xPos+Width;
         else xlocation=mouseX;
@@ -348,9 +356,9 @@ class Graph {
   }
 
   void smoothLine(float[] x, float[] y, float[] z, float[] a ) {
-    GraphColor=color(188, 53, 53);
+    GraphColor = color(188, 53, 53);
     smoothLine(x, y);
-    GraphColor=color(193-100, 216-100, 16);
+    GraphColor = color(193-100, 216-100, 16);
     smoothLine(z, a);
   }
 }

@@ -5,8 +5,6 @@ int graphMargin = 175;
 Graph[] graphs = {
   new Graph(115, 80, graphWidth, graphHeight, color (200, 20, 20)),
   new Graph(115 + (graphWidth + graphMargin), 80, graphWidth, graphHeight, color (200, 20, 20)),
-  new Graph(115, 80 + (graphHeight + graphMargin), graphWidth, graphHeight, color (200, 20, 20)),
-  new Graph(115 + (graphWidth + graphMargin), 80 + (graphHeight + graphMargin), graphWidth, graphHeight, color (200, 20, 20))
 };
 float[] gestureOne=null;
 float[] gestureTwo = null;
@@ -16,7 +14,7 @@ String[] names = {"Nothing", "One-finger-Touch", "Near"};
 PrintWriter output;
 boolean isCollecting = false;
 void setup() {
-  size(1280, 960);
+  size(1280, 720);
 
   for (int i = 0; i < graphs.length; i++) {
     graphs[i].xLabel = "Number";
@@ -58,7 +56,7 @@ void draw() {
         graphs[i].smoothLine(Time3, Voltage3);
       }
     } catch(NullPointerException e) {
-      println("Warning: data are not initialized.");
+      println("Warning: Data are not initialized.");
     }
     popStyle();
     popMatrix();
@@ -66,7 +64,7 @@ void draw() {
     fill(0, 0, 0);
     textSize(20);
     text("Click label to collect data for a second.", 800, 40);
-    text("Type 's' to save collected data.", 800, 65);
+    text("Type \"S\" to save collected data.", 800, 65);
 
     /* ====================================================================
      Gesture compare
@@ -97,8 +95,6 @@ void keyPressed() {
 }
 
 void stop() {
-  output.flush();
-  output.close();
   myPort.stop();
   super.stop();
 }
@@ -106,9 +102,9 @@ void stop() {
 void mousePressed() {
   if (isCollecting) return;
   int count = 0;
-  println("Start recording...");
   for (int i = 0; i < names.length; i++) {
     if (mousePressed && mouseX > 800 && mouseX < 850 && mouseY > 100 * (i+1) && mouseY < 100 * (i+1) + 50) {
+      println("Start recording...");
       println("Press '" + names[i] + "'");
       while(count < 20) {
         output.print(names[i] + ",");
@@ -119,7 +115,7 @@ void mousePressed() {
         count++;
         delay(50);
       }
+      println("Finish recording.");
     }
   }
-  println("Finish recording.");
 }
