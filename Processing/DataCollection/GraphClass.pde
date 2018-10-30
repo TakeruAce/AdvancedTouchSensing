@@ -2,7 +2,6 @@ class Graph {
   float maxX = 0;
   float maxY = 0;
   int maxI = 0;
-  boolean Dot = true;            // Draw dots at each data point if true
   boolean RightAxis;            // Draw the next graph using the right axis if true
   boolean ErrorFlag = false;      // If the time array isn't in ascending order, make true
   boolean ShowMouseLines = true;  // Draw lines and give values of the mouse position
@@ -187,26 +186,6 @@ class Graph {
     }
   }
 
-
-  /*  =========================================================================================
-   Dot graph
-   ==========================================================================================  */
-
-  void DotGraph(float[] x, float[] y) {
-
-    for (int i=0; i<x.length; i++) {
-      strokeWeight(2);
-      stroke(GraphColor);
-      noFill();
-      smooth();
-      ellipse(
-      xPos+(x[i]-x[0])/(x[x.length-1]-x[0])*Width,
-      yPos+Height-(y[i]/(yMax-yMin)*Height)+(yMin)/(yMax-yMin)*Height,
-      2, 2
-        );
-    }
-  }
-
   /*  =========================================================================================
    Streight line graph
    ==========================================================================================  */
@@ -244,7 +223,7 @@ class Graph {
     //         if(!ErrorFlag |true ){    // sort out later!
 
     beginShape();
-    strokeWeight(6);
+    strokeWeight(2);
     stroke(GraphColor);
     noFill();
     smooth();
@@ -268,7 +247,6 @@ class Graph {
        ===========================================================================*/
       if (i<x.length-1) {
         if (x[i]>x[i+1]) {
-
           ErrorFlag=true;
         }
       }
@@ -277,52 +255,35 @@ class Graph {
        First and last bits can't be part of the curve, no points before first bit,
        none after last bit. So a streight line is drawn instead
        ================================================================================= */
-
-      if (i==0 || i==x.length-2)line(xPos+(x[i]-x[0])/(x[x.length-1]-x[0])*Width,
-      yPos+Height-(y[i]/(yMax-yMin)*Height)+(yMin)/(yMax-yMin)*Height,
-      xPos+(x[i+1]-x[0])/(x[x.length-1]-x[0])*Width,
-      yPos+Height-(y[i+1]/(yMax-yMin)*Height)+(yMin)/(yMax-yMin)*Height);
+      if (i==0 || i==x.length-2) line(
+        xPos+(x[i]-x[0])/(x[x.length-1]-x[0])*Width,
+        yPos+Height-(y[i]/(yMax-yMin)*Height)+(yMin)/(yMax-yMin)*Height,
+        xPos+(x[i+1]-x[0])/(x[x.length-1]-x[0])*Width,
+        yPos+Height-(y[i+1]/(yMax-yMin)*Height)+(yMin)/(yMax-yMin)*Height
+      );
 
       /* =================================================================================
        For the rest of the array a curve (spline curve) can be created making the graph
        smooth.
        ================================================================================= */
-
       curveVertex( xPos+(x[i]-x[0])/(x[x.length-1]-x[0])*Width,
       yPos+Height-(y[i]/(yMax-yMin)*Height)+(yMin)/(yMax-yMin)*Height);
 
-      /* =================================================================================
-       If the Dot option is true, Place a dot at each data point.
-       ================================================================================= */
-      if (i == maxI)
-      {
+      if (i == maxI) {
         ellipse(
-        xPos+(x[i]-x[0])/(x[x.length-1]-x[0])*Width,
-        yPos+Height-(y[i]/(yMax-yMin)*Height)+(yMin)/(yMax-yMin)*Height,
-        20, 20
-          );
-      }
-      if (Dot)ellipse(
-      xPos+(x[i]-x[0])/(x[x.length-1]-x[0])*Width,
-      yPos+Height-(y[i]/(yMax-yMin)*Height)+(yMin)/(yMax-yMin)*Height,
-      2, 2
+          xPos+(x[i]-x[0])/(x[x.length-1]-x[0])*Width,
+          yPos+Height-(y[i]/(yMax-yMin)*Height)+(yMin)/(yMax-yMin)*Height,
+          20,
+          20
         );
+      }
 
       /* =================================================================================
        Highlights points closest to Mouse X position
        =================================================================================*/
-
-      if ( abs(mouseX-(xPos+(x[i]-x[0])/(x[x.length-1]-x[0])*Width))<5 ) {
-
-
+      if (mouseY >= yPos && mouseY <= (yPos + Height) && abs(mouseX - (xPos + (x[i] - x[0]) / (x[x.length-1] - x[0]) * Width)) < 5) {
         float yLinePosition = yPos+Height-(y[i]/(yMax-yMin)*Height)+(yMin)/(yMax-yMin)*Height;
         float xLinePosition = xPos+(x[i]-x[0])/(x[x.length-1]-x[0])*Width;
-        strokeWeight(1);
-        stroke(240);
-        // line(xPos,yLinePosition,xPos+Width,yLinePosition);
-        strokeWeight(2);
-        stroke(GraphColor);
-
         ellipse(xLinePosition, yLinePosition, 4, 4);
       }
     }
@@ -336,7 +297,6 @@ class Graph {
 
     if ((mouseX>xPos&mouseX<(xPos+Width))&(mouseY>yPos&mouseY<(yPos+Height))) {
       if (ShowMouseLines) {
-        // if(mouseX<xPos)xlocation=xPos;
         if (mouseX>xPos+Width)xlocation=xPos+Width;
         else xlocation=mouseX;
         stroke(200);

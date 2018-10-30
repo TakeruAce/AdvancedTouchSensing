@@ -16,12 +16,12 @@ String[] names = {"Nothing", "One-finger-Touch", "Near"};
 PrintWriter output;
 boolean isCollecting = false;
 void setup() {
-  size(1200, 800);
+  size(1280, 960);
 
   for (int i = 0; i < graphs.length; i++) {
     graphs[i].xLabel = "Number";
     graphs[i].yLabel = "Amp";
-    graphs[i].Title = "graph " + str(i + 1);
+    graphs[i].Title = "Graph " + str(i + 1);
   }
   noLoop();
 
@@ -46,19 +46,19 @@ void setup() {
 void draw() {
   background(255);
 
-  /* ====================================================================
-   Print the graph
-   ====================================================================  */
-
   if ( DataReceived3 ) {
     pushMatrix();
     pushStyle();
-    for (int i = 0; i < graphs.length; i++) {
-      graphs[i].yMax=700;
-      graphs[i].yMin=0;
-      graphs[i].xMax=int (max(Time3));
-      graphs[i].DrawAxis();
-      graphs[i].smoothLine(Time3, Voltage3);
+    try {
+      for (int i = 0; i < graphs.length; i++) {
+        graphs[i].yMax = 700;
+        graphs[i].yMin = 0;
+        graphs[i].xMax = int(max(Time3));
+        graphs[i].DrawAxis();
+        graphs[i].smoothLine(Time3, Voltage3);
+      }
+    } catch(NullPointerException e) {
+      println("Warning: data are not initialized.");
     }
     popStyle();
     popMatrix();
