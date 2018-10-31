@@ -19,7 +19,8 @@
   Wave:           High frequency PWM
   Method:         Low compare match
   Clock Division: None
-  Top:            255
+  Min Top Count:  30
+  Max Top Count:  255
   Threshold:      TOP / 2
 */
 
@@ -27,10 +28,10 @@
 #define CLR(x) (x &= (~(1<<0)))
 
 #define SENSING_NUM 2
-#define MIN_PERIOD 30
-#define MAX_PERIOD 255
+#define MIN_COUNT 30
+#define MAX_COUNT 255
 #define SAMPLE_SIZE SENSING_NUM
-#define SAMPLE_NUM (MAX_PERIOD - MIN_PERIOD) / SAMPLE_SIZE
+#define SAMPLE_NUM (MAX_COUNT - MIN_COUNT) / SAMPLE_SIZE
 
 int v[SENSING_NUM];
 float results[SENSING_NUM][SAMPLE_NUM];
@@ -42,9 +43,9 @@ void setup() {
   pinMode(10,OUTPUT);
   TCCR1A = 0b10100010;
   TCCR1B = 0b00011001;
-  ICR1 = MIN_PERIOD;
-  OCR1A = MIN_PERIOD / 2;
-  OCR1B = MIN_PERIOD / 2;
+  ICR1 = MIN_COUNT;
+  OCR1A = MIN_COUNT / 2;
+  OCR1B = MIN_COUNT / 2;
 
   Serial.begin(115200);
   for (int i = 0; i < SENSING_NUM; i++) {
@@ -63,15 +64,15 @@ void loop() {
       } else {
         results[i][d] = (results[i][d - 1] + results[i][d] + (float)(v[i])) / 3;
       }
-      freq[i][d] = d * SAMPLE_SIZE + MIN_PERIOD;
+      freq[i][d] = d * SAMPLE_SIZE + MIN_COUNT;
     }
     // Stop generator
     CLR(TCCR1B);
     // Reload new frequency
     TCNT1 = 0;
-    ICR1 = d * SAMPLE_SIZE + MIN_PERIOD;
-    OCR1A = (d * SAMPLE_SIZE + MIN_PERIOD) / 2;
-    OCR1B = (d * SAMPLE_SIZE + MIN_PERIOD) / 2;
+    ICR1 = d * SAMPLE_SIZE + MIN_COUNT;
+    OCR1A = (d * SAMPLE_SIZE + MIN_COUNT) / 2;
+    OCR1B = (d * SAMPLE_SIZE + MIN_COUNT) / 2;
     // Restart generator
     SET(TCCR1B);
   }
