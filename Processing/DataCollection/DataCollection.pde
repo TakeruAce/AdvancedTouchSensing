@@ -37,26 +37,26 @@ void setup() {
   } else {
     exit();
   }
-  frameRate(20);
+  frameRate(60);
 }
 
 
 void draw() {
   background(255);
 
-  if ( DataReceived ) {
+  if (DataReceived) {
     pushMatrix();
     pushStyle();
     try {
       for (int i = 0; i < graphs.length; i++) {
         graphs[i].yMax = 700;
         graphs[i].yMin = 0;
-        graphs[i].xMax = int(max(Time));
+        graphs[i].xMax = int(max(Time[i]));
         graphs[i].DrawAxis();
-        graphs[i].smoothLine(Time, Voltage);
+        graphs[i].smoothLine(Time[i], Voltage[i]);
       }
     } catch(NullPointerException e) {
-      println("Warning: Data are not initialized.");
+      println("Warning: no data is received.");
     }
     popStyle();
     popMatrix();
@@ -108,8 +108,8 @@ void mousePressed() {
       println("Press '" + names[i] + "'");
       while(count < 20) {
         output.print(names[i] + ",");
-        for (int j = 0;j<Voltage.length;j++) {
-          output.print(Voltage[j] + ",");
+        for (int j = 0;j<Voltage[0].length;j++) {
+          output.print(Voltage[0][j] + ",");
         }
         output.println();
         count++;

@@ -1,20 +1,21 @@
 import processing.serial.*;
 
 // Port
-int PortSelected = 11;
+final int PORT_SELECTED = 11;
 String portName;
-String[] ArrayOfPorts = new String[PortSelected];
+String[] ArrayOfPorts = new String[PORT_SELECTED];
 Serial myPort;
 
 // Data
+final int NUM_DATA = 2;
 boolean DataReceived = false;
-float[] DynamicTime;
-float[] DynamicVoltage;
-float[] Time;
-float[] Voltage;
+float[][] DynamicTime = new float[NUM_DATA][];
+float[][] DynamicVoltage = new float[NUM_DATA][];
+float[][] Time = new float[NUM_DATA][];
+float[][] Voltage = new float[NUM_DATA][];
 
 // Communication
-int xValue, yValue, Command;
+int xValue, yValue, command, phase, dataIndex;
 boolean Error = true;
 int ErrorCounter = 0;
 int TotalRecieved = 0;
@@ -24,7 +25,7 @@ int serialCount = 0;
 int xMSB, xLSB, yMSB, yLSB;
 
 boolean SerialPortSetup() {
-  portName = Serial.list()[PortSelected];
+  portName = Serial.list()[PORT_SELECTED];
   ArrayOfPorts=Serial.list();
   println("Port list:");
   println("=====================================");
@@ -36,7 +37,7 @@ boolean SerialPortSetup() {
     exit();
   }
   myPort.clear();
-  myPort.buffer(20);
+  myPort.buffer(NumOfSerialBytes);
   return true;
 }
 
@@ -46,7 +47,7 @@ void serialEvent(Serial myPort) {
     if (inByte == 0) {
       serialCount = 0;
     } else if (inByte > 255) {
-      println(" inByte = "+inByte);
+      println("inByte = " + inByte);
       exit();
     }
 
@@ -54,22 +55,20 @@ void serialEvent(Serial myPort) {
     serialCount++;
 
     Error = true;
-    if (serialCount >= NumOfSerialBytes ) {
+    if (serialCount >= NumOfSerialBytes) {
       serialCount = 0;
 
       TotalRecieved++;
 
-      int Checksum = 0;
+      int checkSum = 0;
       for (int x = 0; x < serialInArray.length - 1; x++) {
-        Checksum = Checksum + serialInArray[x];
+        checkSum = checkSum + serialInArray[x];
       }
-      Checksum = Checksum % 255;
+      checkSum = checkSum % 255;
 
-      if (Checksum == serialInArray[serialInArray.length - 1]) {
+      if (checkSum == serialInArray[serialInArray.length - 1]) {
         Error = false;
-        DataReceived = true;
-      }
-      else {
+      } else {
         Error = true;
         DataReceived = false;
         ErrorCounter++;
@@ -104,30 +103,38 @@ void serialEvent(Serial myPort) {
       xValue   = xMSB << 8 | xLSB;
       yValue   = yMSB << 8 | yLSB;
 
-      Command  = serialInArray[1];
-      switch(Command) {
+      command  = serialInArray[1];
+      phase = command % 3;
+      dataIndex = (command - 1) / 3;
+      switch(phase) {
         // Init arrays
         case 1:
-          DynamicTime = new float[0];
-          DynamicVoltage = new float[0];
+          DynamicTime[dataIndex] = new float[0];
+          DynamicVoltage[dataIndex] = new float[0];
           break;
 
         // Add values
         case 2:
           try {
-            DynamicTime = append(DynamicTime, (xValue));
-            DynamicVoltage = append(DynamicVoltage, (yValue));
+            DynamicTime[dataIndex] = append(DynamicTime[dataIndex], (xValue));
+            DynamicVoltage[dataIndex] = append(DynamicVoltage[dataIndex], (yValue));
             break;
-          } catch(NullPointerException e) {
-            println("Warning: Arrays are not initialized in this loop.");
+          } catch (NullPointerException e) {
+            println("Warning: arrays are not initialized.");
           }
           break;
 
         // Export arrays
-        case 3:
-          Time = DynamicTime;
-          Voltage = DynamicVoltage;
-          DataReceived = true;
+        case 0:
+          Time[dataIndex] = DynamicTime[dataIndex];
+          Voltage[dataIndex] = DynamicVoltage[dataIndex];
+          if (dataIndex == NUM_DATA - 1) {
+            DataReceived = true;
+          }
+          break;
+        default:
+          println("Error: The phase is an unexpected value (=" + phase + ").");
+          exit();
           break;
       }
     }

@@ -1,78 +1,81 @@
-//****************************************************************************************
-// Illutron take on Disney style capacitive touch sensor using only passives and Arduino
-// Dzl 2012
-//****************************************************************************************
+/*
+  Illutron take on Disney style capacitive touch sensor using only passives and Arduino
+  Dzl 2012
 
-//                              10n
-// PIN 9 --[10k]-+-----10mH---+--||-- OBJECT
-//               |            |
-//              3.3k          |
-//               |            V 1N4148 diode
-//              GND           |
-//                            |
-//Analog 0 ---+------+--------+
-//            |      |
-//          100pf   1MOmhm
-//            |      |
-//           GND    GND
+                                   10nF
+    PWM Output --[10k]-+-----10mH---+--||-- OBJECT
+                       |            |
+                      3.3k          |
+                       |            V 1N4148 diode
+                      GND           |
+                                    |
+    Analog Input ---+------+--------+
+                    |      |
+                  100pF   1MOmhm
+                    |      |
+                   GND    GND
 
-#define SET(x,y) (x |= (1<<y))
-#define CLR(x,y) (x &= (~(1<<y)))
-#define CHK(x,y) (x & (1<<y))
-#define TOG(x,y) (x ^= (1<<y))
+  PWM Output:     9 & 10 (16bit timer)
+  Wave:           High frequency PWM
+  Method:         Low compare match
+  Clock Division: None
+  Top:            255
+  Threshold:      TOP / 2
+*/
 
-#define MIN_TOP 30
-#define MAX_TOP 255
-#define N MAX_TOP - MIN_TOP
+#define SET(x) (x |= (1<<0))
+#define CLR(x) (x &= (~(1<<0)))
 
-float results[N];
-float freq[N];
-int sizeOfArray = N;
+#define SENSING_NUM 2
+#define MIN_PERIOD 30
+#define MAX_PERIOD 255
+#define SAMPLE_SIZE SENSING_NUM
+#define SAMPLE_NUM (MAX_PERIOD - MIN_PERIOD) / SAMPLE_SIZE
+
+int v[SENSING_NUM];
+float results[SENSING_NUM][SAMPLE_NUM];
+float freq[SENSING_NUM][SAMPLE_NUM];
+int sizeOfArray = SAMPLE_NUM;
 
 void setup() {
-  /*
-    Pin:            9 & 10 (16bit timer)
-    Wave:           High frequency PWM
-    Method:         Low compare match
-    Clock division: None
-    Top:            110
-    Threshold:      55
-  */
-  TCCR1A = 0b10100010;
-  TCCR1B = 0b00011001;
-  ICR1 = MIN_TOP;
-  OCR1A = MIN_TOP / 2;
-  OCR1B = MIN_TOP / 2;
-
   pinMode(9,OUTPUT);
   pinMode(10,OUTPUT);
-  pinMode(8,OUTPUT); // Sync test pin
+  TCCR1A = 0b10100010;
+  TCCR1B = 0b00011001;
+  ICR1 = MIN_PERIOD;
+  OCR1A = MIN_PERIOD / 2;
+  OCR1B = MIN_PERIOD / 2;
 
   Serial.begin(115200);
-  for (int i = 0; i < N; i++) {
-    results[i] = 0;
+  for (int i = 0; i < SENSING_NUM; i++) {
+    for (int j = 0; j < SAMPLE_NUM; j++) {
+      results[i][j] = 0;
+    }
   }
 }
 
 void loop() {
-  unsigned int d;
-
-  int counter = 0;
-  for (unsigned int d = 0; d < N; d++) {
-    int v = analogRead(0); // Read response signal
-    CLR(TCCR1B, 0);        // Stop generator
-    TCNT1 = 0;             // Reload new frequency
-    ICR1 = d + MIN_TOP;
-    OCR1A = (d + MIN_TOP) / 2;
-    OCR1B = (d + MIN_TOP) / 2;
-    SET(TCCR1B, 0);        //-Restart generator
-
-    results[d] = results[d] * 0.5 + (float)(v) * 0.5; //Filter results
-
-    freq[d] = d + MIN_TOP;
+  for (unsigned int d = 0; d < SAMPLE_NUM; d++) {
+    for (int i = 0; i < SENSING_NUM; i++) {
+      v[i] = analogRead(i);
+      if (d < 1) {
+        results[i][d] = (results[i][d] + (float)(v[i])) / 2;
+      } else {
+        results[i][d] = (results[i][d - 1] + results[i][d] + (float)(v[i])) / 3;
+      }
+      freq[i][d] = d * SAMPLE_SIZE + MIN_PERIOD;
+    }
+    // Stop generator
+    CLR(TCCR1B);
+    // Reload new frequency
+    TCNT1 = 0;
+    ICR1 = d * SAMPLE_SIZE + MIN_PERIOD;
+    OCR1A = (d * SAMPLE_SIZE + MIN_PERIOD) / 2;
+    OCR1B = (d * SAMPLE_SIZE + MIN_PERIOD) / 2;
+    // Restart generator
+    SET(TCCR1B);
   }
-
-   PlottArray(1, freq, results);
-
-  TOG(PORTB, 0);            //-Toggle pin 8 after each sweep (good for scope)
+  for (int i = 0; i < SENSING_NUM; i++) {
+    SendData(i, freq[i], results[i]);
+  }
 }
