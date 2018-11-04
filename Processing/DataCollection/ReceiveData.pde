@@ -1,18 +1,16 @@
 import processing.serial.*;
 
 // Port
-final int PORT_SELECTED = 11;
 String portName;
 String[] ArrayOfPorts = new String[PORT_SELECTED];
 Serial myPort;
 
 // Data
-final int NUM_DATA = 2;
 boolean DataReceived = false;
-float[][] DynamicTime = new float[NUM_DATA][];
-float[][] DynamicVoltage = new float[NUM_DATA][];
-float[][] Time = new float[NUM_DATA][];
-float[][] Voltage = new float[NUM_DATA][];
+float[][] DynamicTime = new float[SENSING_NUM][];
+float[][] DynamicVoltage = new float[SENSING_NUM][];
+float[][] Time = new float[SENSING_NUM][];
+float[][] Voltage = new float[SENSING_NUM][];
 
 // Communication
 int xValue, yValue, command, phase, dataIndex;
@@ -128,7 +126,7 @@ void serialEvent(Serial myPort) {
         case 0:
           Time[dataIndex] = DynamicTime[dataIndex];
           Voltage[dataIndex] = DynamicVoltage[dataIndex];
-          if (dataIndex == NUM_DATA - 1) {
+          if (dataIndex == SENSING_NUM - 1) {
             DataReceived = true;
           }
           break;
