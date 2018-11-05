@@ -1,5 +1,5 @@
 // Parameter
-final int PORT_SELECTED = 11;
+final int SENSOR_PORT = 11;
 final int SENSING_NUM = 4;
 final int graphWidth = 200;
 final int graphHeight = 150;
@@ -163,7 +163,7 @@ void record(int labelNumber) {
 }
 
 void stop() {
-  myPort.stop();
+  sensorPort.stop();
   super.stop();
 }
 

@@ -2,8 +2,8 @@ import processing.serial.*;
 
 // Port
 String portName;
-String[] ArrayOfPorts = new String[PORT_SELECTED];
-Serial myPort;
+String[] ArrayOfPorts = new String[SENSOR_PORT];
+Serial sensorPort;
 
 // Data
 boolean DataReceived = false;
@@ -23,19 +23,19 @@ int serialCount = 0;
 int xMSB, xLSB, yMSB, yLSB;
 
 boolean SerialPortSetup() {
-  portName = Serial.list()[PORT_SELECTED];
+  portName = Serial.list()[SENSOR_PORT];
   ArrayOfPorts=Serial.list();
   println("Port list:");
   println("=====================================");
   println(ArrayOfPorts);
   println("=====================================");
   println("Selected port: " + portName);
-  myPort = new Serial(this, portName, 115200);
-  if (myPort == null) {
+  sensorPort = new Serial(this, portName, 115200);
+  if (sensorPort == null) {
     exit();
   }
-  myPort.clear();
-  myPort.buffer(NumOfSerialBytes);
+  sensorPort.clear();
+  sensorPort.buffer(NumOfSerialBytes);
   return true;
 }
 
