@@ -3,17 +3,17 @@
   Dzl 2012
 
                                    10nF
-    PWM Output --[10k]-+-----10mH---+--||-- OBJECT
-                       |            |
-                      3.3k          |
-                       |            V 1N4148 diode
-                      GND           |
-                                    |
-    Analog Input ---+------+--------+
-                    |      |
-                  100pF   1MOmhm
-                    |      |
-                   GND    GND
+    PWM Output -[*Omhm]-+-----10mH---+--||-- OBJECT
+                        |            |
+                       3.3k          |
+                        |            V 1N4148 diode
+                       GND           |
+                                     |
+     Analog Input ---+------+--------+
+                     |      |
+                   100pF   1MOmhm
+                     |      |
+                    GND    GND
 
   PWM Output:     9 & 10 (16bit timer)
   Wave:           High frequency PWM
