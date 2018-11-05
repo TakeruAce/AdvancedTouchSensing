@@ -49,7 +49,6 @@ final int RECORDED = -2;
 int[] learningCount = new int[names.length];
 PrintWriter[] output = new PrintWriter[SENSING_NUM];
 boolean isCollecting = false;
-boolean hasCanceled = false;
 int selectedNumber = NOT_SELECTED;
 
 // Funtion
