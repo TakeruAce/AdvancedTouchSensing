@@ -44,9 +44,13 @@ String[] names = {
 };
 
 // Variable
+final int NOT_SELECTED = -1;
+final int RECORDED = -2;
 int[] learningCount = new int[names.length];
 PrintWriter[] output = new PrintWriter[SENSING_NUM];
 boolean isCollecting = false;
+boolean hasCanceled = false;
+int selectedNumber = NOT_SELECTED;
 
 // Funtion
 void setup() {
@@ -85,6 +89,9 @@ void setup() {
 void draw() {
   background(255);
 
+  if (selectedNumber == RECORDED) {
+    selectedNumber = NOT_SELECTED;
+  }
   if (DataReceived) {
     pushMatrix();
     pushStyle();
@@ -104,27 +111,60 @@ void draw() {
 
     fill(0, 0, 0);
     textSize(20);
-    text("Click label to collect data for a second.", 800, 40);
-    text("Type \"S\" to save collected data.", 800, 65);
+    text(
+      "Type label number to collect data for a second.",
+      800, 75 * names.length + 50
+    );
+    text(
+      "Type \"S\" to save collected data.",
+      800, 75 * names.length + 50 + 40
+    );
+    text(
+      "[*] is a number of learning times.",
+      800, 75 * names.length + 50 + 40 * 2
+    );
 
     /* ====================================================================
      Gesture compare
      ====================================================================  */
     for (int i = 0; i < names.length;i++) {
-      if (mouseX > 800 && mouseX < 850 && mouseY > 75 * (i + 1) && mouseY < 75 * (i + 1) + 50) {
+      if (i == selectedNumber) {
         fill(255, 0, 0);
       } else {
         fill(255, 255, 255);
       }
       stroke(0, 0, 0);
-      rect(800, 75 * (i+1), 50, 50);
+      rect(800, 75 * i + 25, 50, 50);
       fill(0,0,0);
       textSize(30);
-      text(i + "." + names[i] + ": " + learningCount[i], 860, 75 * (i + 1) + 25);
+      text(i + ". " + names[i] + " [" + learningCount[i] + "]", 860, 75 * i + 25 + 25);
 
       fill(255, 0, 0);
     }
   }
+}
+
+void record(int labelNumber) {
+  int count = 0;
+  println("Start recording \'" + names[labelNumber] + "\'...");
+  learningCount[labelNumber]++;
+  while(count < 20) {
+    for (int j = 0; j < SENSING_NUM; j++) {
+      output[j].print(names[labelNumber] + ",");
+      for (int k = 0; k < Voltage[j].length; k++) {
+        output[j].print(Voltage[j][k] + ",");
+      }
+      output[j].println();
+    }
+    count++;
+    delay(50);
+  }
+  println("Finished.");
+}
+
+void stop() {
+  myPort.stop();
+  super.stop();
 }
 
 void keyPressed() {
@@ -135,33 +175,19 @@ void keyPressed() {
     }
     println("Save file.");
   }
-}
 
-void stop() {
-  myPort.stop();
-  super.stop();
-}
-
-void mousePressed() {
-  if (isCollecting) return;
-  int count = 0;
-  for (int i = 0; i < names.length; i++) {
-    if (mousePressed && mouseX > 800 && mouseX < 850 && mouseY > 75 * (i+1) && mouseY < 75 * (i+1) + 50) {
-      println("Start recording...");
-      println("Press '" + names[i] + "'");
-      learningCount[i]++;
-      while(count < 20) {
-        for (int j = 0; j < SENSING_NUM; j++) {
-          output[j].print(names[i] + ",");
-          for (int k = 0; k < Voltage[j].length; k++) {
-            output[j].print(Voltage[j][k] + ",");
-          }
-          output[j].println();
-        }
-        count++;
-        delay(50);
+  if (!isCollecting && selectedNumber != RECORDED) {
+    for (int i = 0; i < names.length; i++) {
+      if (key - '0' == i) {
+        selectedNumber = i;
       }
-      println("Finish recording.");
     }
+  };
+}
+
+void keyReleased() {
+  if (selectedNumber >= 0) {
+    record(selectedNumber);
+    selectedNumber = RECORDED;
   }
 }
