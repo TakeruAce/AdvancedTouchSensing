@@ -71,7 +71,7 @@ void setup() {
     }
   }
 
-  if (SerialPortSetup()) { // speed of 115200 bps etc.
+  if (sensorSerialPortSetup()) { // speed of 115200 bps etc.
     String filename = nf(year(),4) + nf(month(),2) + nf(day(),2) + nf(hour(),2) + nf(minute(),2) + nf(second(),2);
     for (int i = 0; i < SENSING_NUM; i++) {
       output[i] = createWriter("data/" + filename + "_sensor" + (i + 1) + ".csv");

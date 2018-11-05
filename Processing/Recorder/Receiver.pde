@@ -22,7 +22,7 @@ int[] serialInArray = new int[NumOfSerialBytes];
 int serialCount = 0;
 int xMSB, xLSB, yMSB, yLSB;
 
-boolean SerialPortSetup() {
+boolean sensorSerialPortSetup() {
   portName = Serial.list()[SENSOR_PORT];
   ArrayOfPorts=Serial.list();
   println("Port list:");
