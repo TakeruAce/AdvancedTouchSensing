@@ -35,7 +35,8 @@
 #define MAX_COUNT 255
 #define SAMPLE_SIZE SENSING_NUM
 #define SAMPLE_NUM (MAX_COUNT - MIN_COUNT) / SAMPLE_SIZE
-#define AVERAGE_NUM 2
+#define AVERAGE_NUM 5
+#define IS_FOR_ACTUATOR true
 
 // Variable
 int v[SENSING_NUM];
@@ -78,7 +79,12 @@ void loop() {
       for (int j = 0; j < AVERAGE_NUM; j++) {
         v[i] += analogRead(i) / AVERAGE_NUM;
       }
-      results[i][d] = results[i][d] * 0.5 + (float)(v[i]) * 0.5;
+      if (IS_FOR_ACTUATOR) {
+        results[i][d] = results[i][d] * 0.25 + (float)(v[i]) * 0.75;
+      } else {
+        results[i][d] = results[i][d] * 0.5 + (float)(v[i]) * 0.5;
+      }
+
       freq[i][d] = d * SAMPLE_SIZE + MIN_COUNT;
     }
     // Pin 9 & 10
