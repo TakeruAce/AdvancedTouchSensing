@@ -1,7 +1,7 @@
 import processing.net.*;
 
 // Parameter
-final int SENSOR_PORT = 13;
+final int SENSOR_PORT = 11;
 final int DISCRIMINATOR_PORT = 10001;
 final int ACTUATOR_PORT = 12;
 final int SENSING_NUM = 4;
@@ -74,7 +74,7 @@ void setup() {
   server.active();
   println("server address:" + server.ip());
   client = new Client(this, "", 10002);
-  frameRate(10);
+  frameRate(100);
 }
 
 void draw() {
@@ -107,7 +107,7 @@ void draw() {
      Gesture compare
      ====================================================================  */
     fill(0,0,0);
-    textSize(30);
+    textSize(50);
     text(currentState, 810, 100);
     switch(currentState) {
       case "Nothing":
