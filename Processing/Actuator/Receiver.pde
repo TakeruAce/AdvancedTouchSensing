@@ -29,7 +29,7 @@ boolean sensorSerialPortSetup() {
   println("=====================================");
   println(ArrayOfPorts);
   println("=====================================");
-  println("Selected port: " + portName);
+  println("Selected sensor port: " + portName);
   sensorPort = new Serial(this, portName, 115200);
   if (sensorPort == null) {
     exit();

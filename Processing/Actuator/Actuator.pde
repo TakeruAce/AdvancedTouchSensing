@@ -1,9 +1,9 @@
 import processing.net.*;
 
 // Parameter
-final int SENSOR_PORT = 11;
+final int SENSOR_PORT = 17;
 final int DISCRIMINATOR_PORT = 10001;
-final int ACTUATOR_PORT = 12;
+final int ACTUATOR_PORT = 10;
 final int SENSING_NUM = 4;
 final int graphWidth = 200;
 final int graphHeight = 150;
@@ -49,6 +49,7 @@ boolean hasReceived = true;
 
 boolean actuatorSerialPortSetup() {
   String portName = Serial.list()[ACTUATOR_PORT];
+  println("Selected actuator port: " + portName);
   actuatorPort = new Serial(this, portName, 9600);
   if (actuatorPort == null) {
     exit();
@@ -59,7 +60,6 @@ boolean actuatorSerialPortSetup() {
 // Funtion
 void setup() {
   size(1280, 720);
-
   for (int i = 0; i < graphs.length; i++) {
     graphs[i].xLabel = "Number";
     graphs[i].yLabel = "Amp";
@@ -112,27 +112,21 @@ void draw() {
     switch(currentState) {
       case "Nothing":
         actuatorPort.write('a');
-        println("Send: a");
         break;
       case "Near":
         actuatorPort.write('b');
-        println("Send: b");
         break;
       case "Touch1":
         actuatorPort.write('c');
-        println("Send: c");
         break;
       case "Touch2":
         actuatorPort.write('d');
-        println("Send: d");
         break;
       case "Touch3":
         actuatorPort.write('e');
-        println("Send: e");
         break;
       case "Touch4":
         actuatorPort.write('f');
-        println("Send: f");
         break;
       default:
         break;
