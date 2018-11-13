@@ -76,12 +76,15 @@ void loop() {
   for (unsigned int d = 0; d < SAMPLE_NUM; d++) {
     for (int i = 0; i < SENSING_NUM; i++) {
       v[i] = 0;
-      for (int j = 0; j < AVERAGE_NUM; j++) {
-        v[i] += analogRead(i) / AVERAGE_NUM;
-      }
       if (IS_FOR_ACTUATOR) {
-        results[i][d] = results[i][d] * 0.25 + (float)(v[i]) * 0.75;
+        for (int j = 0; j < AVERAGE_NUM_FOR_ACTUATOR; j++) {
+          v[i] += analogRead(i) / AVERAGE_NUM_FOR_ACTUATOR;
+        }
+        results[i][d] = results[i][d] * 0.0 + (float)(v[i]) * 1.0;
       } else {
+        for (int j = 0; j < AVERAGE_NUM; j++) {
+          v[i] += analogRead(i) / AVERAGE_NUM;
+        }
         results[i][d] = results[i][d] * 0.5 + (float)(v[i]) * 0.5;
       }
 
