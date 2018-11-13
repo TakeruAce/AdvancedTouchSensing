@@ -1,6 +1,6 @@
 // Parameter
-final int SENSOR_PORT = 11;
-final int SENSING_NUM = 4;
+final int SENSOR_PORT = 17;
+final int SENSING_NUM = 3;
 final int graphWidth = 200;
 final int graphHeight = 150;
 final int graphMargin = 175;
@@ -25,22 +25,16 @@ final Graph[] graphs = {
     graphWidth,
     graphHeight,
     color (200, 20, 20)
-  ),
-  new Graph(
-    115 + (graphWidth + graphMargin),
-    80 + (graphHeight + graphMargin),
-    graphWidth,
-    graphHeight,
-    color (200, 20, 20)
   )
 };
 String[] names = {
   "Nothing",
-  "Near",
+  "Near1",
+  "Near2",
+  "Near3",
   "Touch1",
   "Touch2",
-  "Touch3",
-  "Touch4"
+  "Touch3"
 };
 
 // Variable

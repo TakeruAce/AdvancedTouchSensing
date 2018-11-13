@@ -30,12 +30,13 @@
 */
 
 // Parameter
-#define SENSING_NUM 4
+#define SENSING_NUM 3
 #define MIN_COUNT 30
 #define MAX_COUNT 255
 #define SAMPLE_SIZE SENSING_NUM
 #define SAMPLE_NUM (MAX_COUNT - MIN_COUNT) / SAMPLE_SIZE
 #define AVERAGE_NUM 5
+#define AVERAGE_NUM_FOR_ACTUATOR 3
 #define IS_FOR_ACTUATOR true
 
 // Variable

@@ -4,7 +4,7 @@ import processing.net.*;
 final int SENSOR_PORT = 17;
 final int DISCRIMINATOR_PORT = 10001;
 final int ACTUATOR_PORT = 10;
-final int SENSING_NUM = 4;
+final int SENSING_NUM = 3;
 final int graphWidth = 200;
 final int graphHeight = 150;
 final int graphMargin = 175;
@@ -25,13 +25,6 @@ final Graph[] graphs = {
   ),
   new Graph(
     115,
-    80 + (graphHeight + graphMargin),
-    graphWidth,
-    graphHeight,
-    color (200, 20, 20)
-  ),
-  new Graph(
-    115 + (graphWidth + graphMargin),
     80 + (graphHeight + graphMargin),
     graphWidth,
     graphHeight,
@@ -109,28 +102,31 @@ void draw() {
     fill(0,0,0);
     textSize(50);
     text(currentState, 810, 100);
-    switch(currentState) {
-      case "Nothing":
-        actuatorPort.write('a');
-        break;
-      case "Near":
-        actuatorPort.write('b');
-        break;
-      case "Touch1":
-        actuatorPort.write('c');
-        break;
-      case "Touch2":
-        actuatorPort.write('d');
-        break;
-      case "Touch3":
-        actuatorPort.write('e');
-        break;
-      case "Touch4":
-        actuatorPort.write('f');
-        break;
-      default:
-        break;
-    }
+    // switch(currentState) {
+    //   case "Nothing":
+    //     actuatorPort.write('a');
+    //     break;
+    //   case "Near1":
+    //     actuatorPort.write('b');
+    //     break;
+    //   case "Near2":
+    //     actuatorPort.write('c');
+    //     break;
+    //   case "Near3":
+    //     actuatorPort.write('d');
+    //     break;
+    //   case "Touch1":
+    //     actuatorPort.write('e');
+    //     break;
+    //   case "Touch2":
+    //     actuatorPort.write('f');
+    //     break;
+    //   case "Touch3":
+    //     actuatorPort.write('g');
+    //     break;
+    //   default:
+    //     break;
+    // }
   }
 }
 
