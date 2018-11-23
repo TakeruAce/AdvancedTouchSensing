@@ -81,7 +81,7 @@ void loop() {
         for (int j = 0; j < AVERAGE_NUM_FOR_ACTUATOR; j++) {
           v[i] += analogRead(i) / AVERAGE_NUM_FOR_ACTUATOR;
         }
-        results[i][d] = results[i][d] * 0.0 + (float)(v[i]) * 1.0;
+        results[i][d] = results[i][d] * 0.2 + (float)(v[i]) * 0.8;
       } else {
         for (int j = 0; j < AVERAGE_NUM; j++) {
           v[i] += analogRead(i) / AVERAGE_NUM;
