@@ -102,31 +102,31 @@ void draw() {
     fill(0,0,0);
     textSize(50);
     text(currentState, 810, 100);
-    // switch(currentState) {
-    //   case "Nothing":
-    //     actuatorPort.write('a');
-    //     break;
-    //   case "Near1":
-    //     actuatorPort.write('b');
-    //     break;
-    //   case "Near2":
-    //     actuatorPort.write('c');
-    //     break;
-    //   case "Near3":
-    //     actuatorPort.write('d');
-    //     break;
-    //   case "Touch1":
-    //     actuatorPort.write('e');
-    //     break;
-    //   case "Touch2":
-    //     actuatorPort.write('f');
-    //     break;
-    //   case "Touch3":
-    //     actuatorPort.write('g');
-    //     break;
-    //   default:
-    //     break;
-    // }
+    switch(currentState) {
+      case "Nothing":
+        actuatorPort.write('a');
+        break;
+      case "Near1":
+        actuatorPort.write('b');
+        break;
+      case "Near2":
+        actuatorPort.write('c');
+        break;
+      case "Near3":
+        actuatorPort.write('d');
+        break;
+      case "Touch1":
+        actuatorPort.write('e');
+        break;
+      case "Touch2":
+        actuatorPort.write('f');
+        break;
+      case "Touch3":
+        actuatorPort.write('g');
+        break;
+      default:
+        break;
+    }
   }
 }
 
