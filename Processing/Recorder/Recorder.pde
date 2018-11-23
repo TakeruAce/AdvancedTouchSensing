@@ -150,7 +150,7 @@ void record(int labelNumber) {
       output[j].println();
     }
     count++;
-    delay(50);
+    delay(10);
   }
   println("Finished.");
 }
@@ -173,14 +173,9 @@ void keyPressed() {
     for (int i = 0; i < names.length; i++) {
       if (key - '0' == i) {
         selectedNumber = i;
+        record(selectedNumber);
+        selectedNumber = RECORDED;
       }
     }
   };
-}
-
-void keyReleased() {
-  if (selectedNumber >= 0) {
-    record(selectedNumber);
-    selectedNumber = RECORDED;
-  }
 }
